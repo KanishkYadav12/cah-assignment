@@ -9,12 +9,15 @@ import {
   ReactNode,
 } from "react";
 
+const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_URL || 'https://cah-assignment.onrender.com'
+
 export interface CartItem {
   id: string;
   name: string;
   price: number;
   quantity: number;
   image: string;
+  variantId?: string;
 }
 
 interface CartContextType {
@@ -28,9 +31,11 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  medusaCartId: string | null;
 }
 
 const STORAGE_KEY = "cah-cart";
+const MEDUSA_CART_KEY = "medusa-cart-id";
 
 function loadCart(): CartItem[] {
   if (typeof window === "undefined") return [];
@@ -42,16 +47,58 @@ function loadCart(): CartItem[] {
   }
 }
 
+// Medusa API helpers
+async function createMedusaCart() {
+  try {
+    const res = await fetch(`${MEDUSA_URL}/store/carts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    })
+    const data = await res.json()
+    return data.cart?.id || null
+  } catch {
+    return null
+  }
+}
+
+async function addItemToMedusaCart(cartId: string, variantId: string, quantity: number) {
+  try {
+    await fetch(`${MEDUSA_URL}/store/carts/${cartId}/line-items`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ variant_id: variantId, quantity }),
+    })
+  } catch {
+    // silent fail - local cart still works
+  }
+}
+
+async function removeItemFromMedusaCart(cartId: string, lineItemId: string) {
+  try {
+    await fetch(`${MEDUSA_URL}/store/carts/${cartId}/line-items/${lineItemId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+  } catch {
+    // silent fail
+  }
+}
+
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [medusaCartId, setMedusaCartId] = useState<string | null>(null);
 
   // Load from localStorage after mount
   useEffect(() => {
     setItems(loadCart());
+    const savedCartId = localStorage.getItem(MEDUSA_CART_KEY)
+    if (savedCartId) setMedusaCartId(savedCartId)
     setHydrated(true);
   }, []);
 
@@ -65,7 +112,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const openCart = useCallback(() => setIsOpen(true), []);
   const closeCart = useCallback(() => setIsOpen(false), []);
 
-  const addItem = useCallback((item: Omit<CartItem, "quantity">) => {
+  const getOrCreateMedusaCart = useCallback(async () => {
+    if (medusaCartId) return medusaCartId
+    const newCartId = await createMedusaCart()
+    if (newCartId) {
+      setMedusaCartId(newCartId)
+      localStorage.setItem(MEDUSA_CART_KEY, newCartId)
+    }
+    return newCartId
+  }, [medusaCartId])
+
+  const addItem = useCallback(async (item: Omit<CartItem, "quantity">) => {
+    // Update local UI instantly
     setItems((prev) => {
       const existing = prev.find((i) => i.id === item.id);
       if (existing) {
@@ -75,7 +133,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       return [...prev, { ...item, quantity: 1 }];
     });
-  }, []);
+
+    // Sync with Medusa in background
+    if (item.variantId) {
+      const cartId = await getOrCreateMedusaCart()
+      if (cartId && item.variantId) {
+        await addItemToMedusaCart(cartId, item.variantId, 1)
+      }
+    }
+  }, [getOrCreateMedusaCart]);
 
   const removeItem = useCallback((id: string) => {
     setItems((prev) => prev.filter((i) => i.id !== id));
@@ -91,7 +157,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = useCallback(() => {
+    setItems([])
+    setMedusaCartId(null)
+    localStorage.removeItem(MEDUSA_CART_KEY)
+  }, []);
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
@@ -109,6 +179,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        medusaCartId,
       }}
     >
       {children}
