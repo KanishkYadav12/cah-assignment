@@ -12,7 +12,7 @@
     "@medusajs/framework": "2.13.3",
     "@medusajs/dashboard": "2.13.3",
     "@medusajs/fulfillment-manual": "2.13.3",
-    "@medusajs/payment-manual": "2.13.3",
+    "@medusajs/payment": "2.13.3",
     "@medusajs/file-local": "2.13.3",
     "pg": "^8.13.0"
   },
