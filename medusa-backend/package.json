@@ -1,18 +1,17 @@
 {
   "name": "medusa-backend",
   "version": "1.0.0",
-  "description": "Cards Against Humanity - Medusa v2 Backend",
   "scripts": {
     "build": "medusa build",
     "start": "medusa start",
-    "dev": "medusa develop",
-    "predeploy": "medusa db:migrate"
+    "dev": "medusa develop"
   },
   "dependencies": {
     "@medusajs/medusa": "2.13.3",
     "@medusajs/framework": "2.13.3",
     "@medusajs/dashboard": "2.13.3",
     "@medusajs/fulfillment-manual": "2.13.3",
+    "@medusajs/payment-manual": "2.13.3",
     "@medusajs/file-local": "2.13.3",
     "pg": "^8.13.0"
   },
@@ -25,4 +24,3 @@
     "node": ">=20"
   }
 }
-
