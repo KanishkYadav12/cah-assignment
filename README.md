@@ -1,6 +1,6 @@
-# Cards Against Humanity — Full Stack Clone
+# Cards Against Humanity — Full Stack 
 
-A pixel-perfect, production-grade clone of [cardsagainsthumanity.com](https://www.cardsagainsthumanity.com) built with a modern headless architecture. All content is fully dynamic and managed through a CMS, with complete e-commerce functionality powered by Medusa.js.
+A pixel-perfect, production-grade system which replicates the [cardsagainsthumanity.com](https://www.cardsagainsthumanity.com) built with a modern headless architecture. All content is fully dynamic and managed through a CMS, with complete e-commerce functionality powered by Medusa.js.
 
 ---
 
