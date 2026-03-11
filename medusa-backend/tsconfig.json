@@ -10,7 +10,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": false,
-    "noEmit": true,
+    "noEmit": false,
     "strictNullChecks": true,
     "jsx": "react-jsx",
     "skipLibCheck": true

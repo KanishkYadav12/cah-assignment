@@ -4,7 +4,8 @@
   "scripts": {
     "build": "medusa build",
     "start": "medusa start",
-    "dev": "medusa develop"
+    "dev": "medusa develop",
+    "migrate": "medusa db:migrate"
   },
   "dependencies": {
     "@medusajs/medusa": "2.13.3",

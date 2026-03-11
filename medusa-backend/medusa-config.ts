@@ -1,5 +1,4 @@
 // @ts-nocheck
-// cspell:ignore medusajs
 import { loadEnv, defineConfig } from "@medusajs/framework/utils"
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
@@ -7,7 +6,6 @@ loadEnv(process.env.NODE_ENV || "development", process.cwd())
 export default defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
-    redisUrl: process.env.REDIS_URL,
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
@@ -15,13 +13,9 @@ export default defineConfig({
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
-    workerMode: process.env.MEDUSA_WORKER_MODE as
-      | "shared"
-      | "worker"
-      | "server",
   },
   admin: {
-    disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
+    disable: false,
     backendUrl: process.env.MEDUSA_BACKEND_URL,
   },
 })
