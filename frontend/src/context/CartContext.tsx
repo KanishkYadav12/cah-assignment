@@ -10,6 +10,12 @@ import {
 } from "react";
 
 const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_URL || 'https://cah-assignment.onrender.com'
+const PUBLISHABLE_KEY = 'pk_76962c41b90bef91da9bea018054c4b5e6bd5744e64dc75b0cc3f6149f9345d8'
+
+const MEDUSA_HEADERS = {
+  'Content-Type': 'application/json',
+  'x-publishable-api-key': PUBLISHABLE_KEY,
+}
 
 export interface CartItem {
   id: string;
@@ -47,12 +53,11 @@ function loadCart(): CartItem[] {
   }
 }
 
-// Medusa API helpers
 async function createMedusaCart() {
   try {
     const res = await fetch(`${MEDUSA_URL}/store/carts`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: MEDUSA_HEADERS,
       credentials: 'include',
     })
     const data = await res.json()
@@ -66,12 +71,12 @@ async function addItemToMedusaCart(cartId: string, variantId: string, quantity: 
   try {
     await fetch(`${MEDUSA_URL}/store/carts/${cartId}/line-items`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: MEDUSA_HEADERS,
       credentials: 'include',
       body: JSON.stringify({ variant_id: variantId, quantity }),
     })
   } catch {
-    // silent fail - local cart still works
+    // silent fail
   }
 }
 
@@ -79,6 +84,7 @@ async function removeItemFromMedusaCart(cartId: string, lineItemId: string) {
   try {
     await fetch(`${MEDUSA_URL}/store/carts/${cartId}/line-items/${lineItemId}`, {
       method: 'DELETE',
+      headers: MEDUSA_HEADERS,
       credentials: 'include',
     })
   } catch {
@@ -94,7 +100,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
   const [medusaCartId, setMedusaCartId] = useState<string | null>(null);
 
-  // Load from localStorage after mount
   useEffect(() => {
     setItems(loadCart());
     const savedCartId = localStorage.getItem(MEDUSA_CART_KEY)
@@ -102,7 +107,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setHydrated(true);
   }, []);
 
-  // Persist to localStorage on change
   useEffect(() => {
     if (hydrated) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
@@ -123,7 +127,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [medusaCartId])
 
   const addItem = useCallback(async (item: Omit<CartItem, "quantity">) => {
-    // Update local UI instantly
     setItems((prev) => {
       const existing = prev.find((i) => i.id === item.id);
       if (existing) {
@@ -134,7 +137,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return [...prev, { ...item, quantity: 1 }];
     });
 
-    // Sync with Medusa in background
     if (item.variantId) {
       const cartId = await getOrCreateMedusaCart()
       if (cartId && item.variantId) {
