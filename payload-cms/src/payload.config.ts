@@ -11,6 +11,49 @@ import { Media } from './collections/Media'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const MEDUSA_BACKEND_URL = process.env.MEDUSA_BACKEND_URL || 'https://cah-assignment.onrender.com'
+const MEDUSA_ADMIN_TOKEN = process.env.MEDUSA_ADMIN_TOKEN || ''
+
+/** Sync product data from Payload CMS → Medusa after create/update */
+async function syncProductToMedusa(doc: any) {
+  if (!MEDUSA_ADMIN_TOKEN) return
+  try {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${MEDUSA_ADMIN_TOKEN}`,
+    }
+    const medusaProduct = {
+      title: doc.name,
+      description: doc.description || '',
+      handle: doc.slug,
+      status: 'published',
+    }
+
+    // Try to find existing product by handle
+    const searchRes = await fetch(`${MEDUSA_BACKEND_URL}/admin/products?handle=${doc.slug}`, { headers })
+    const searchData = await searchRes.json()
+    const existing = searchData?.products?.[0]
+
+    if (existing) {
+      // Update existing product
+      await fetch(`${MEDUSA_BACKEND_URL}/admin/products/${existing.id}`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(medusaProduct),
+      })
+    } else {
+      // Create new product
+      await fetch(`${MEDUSA_BACKEND_URL}/admin/products`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(medusaProduct),
+      })
+    }
+  } catch (error) {
+    console.error('Failed to sync product to Medusa:', error)
+  }
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -18,11 +61,16 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+  cors: [
+    'https://cah-assignment-m5rh.vercel.app',
+    'http://localhost:3000',
+  ],
   collections: [
     Users,
     Media,
     {
       slug: 'hero',
+      access: { read: () => true },
       admin: { useAsTitle: 'heading' },
       fields: [
         { name: 'heading', type: 'text', required: true },
@@ -36,7 +84,16 @@ export default buildConfig({
     },
     {
       slug: 'products',
+      access: { read: () => true },
       admin: { useAsTitle: 'name' },
+      hooks: {
+        afterChange: [
+          async ({ doc }) => {
+            syncProductToMedusa(doc)
+            return doc
+          },
+        ],
+      },
       fields: [
         { name: 'name', type: 'text', required: true },
         { name: 'slug', type: 'text', required: true },
@@ -45,6 +102,7 @@ export default buildConfig({
         { name: 'buttonText', type: 'text' },
         { name: 'buttonLink', type: 'text' },
         { name: 'tagline', type: 'text' },
+        { name: 'medusaVariantId', type: 'text' },
         {
           name: 'images',
           type: 'array',
@@ -64,6 +122,7 @@ export default buildConfig({
     },
     {
       slug: 'faqs',
+      access: { read: () => true },
       admin: { useAsTitle: 'question' },
       fields: [
         { name: 'question', type: 'text', required: true },
@@ -73,6 +132,7 @@ export default buildConfig({
     },
     {
       slug: 'steal-section',
+      access: { read: () => true },
       admin: { useAsTitle: 'title' },
       fields: [
         { name: 'title', type: 'text' },
@@ -84,6 +144,7 @@ export default buildConfig({
     },
     {
       slug: 'footer',
+      access: { read: () => true },
       admin: { useAsTitle: 'copyright' },
       fields: [
         { name: 'copyright', type: 'text' },

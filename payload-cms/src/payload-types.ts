@@ -200,6 +200,7 @@ export interface Product {
   buttonText?: string | null;
   buttonLink?: string | null;
   tagline?: string | null;
+  medusaVariantId?: string | null;
   images?:
     | {
         imageUrl?: string | null;
@@ -434,6 +435,7 @@ export interface ProductsSelect<T extends boolean = true> {
   buttonText?: T;
   buttonLink?: T;
   tagline?: T;
+  medusaVariantId?: T;
   images?:
     | T
     | {
