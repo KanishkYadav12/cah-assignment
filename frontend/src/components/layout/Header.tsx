@@ -68,6 +68,14 @@ export default function Header() {
           )}
         </div>
 
+        {/* Login / Account */}
+        <Link
+          href={customer ? "/account" : "/login"}
+          className="hidden text-[17px] font-black text-white transition-opacity hover:opacity-80 sm:block"
+        >
+          {customer ? "Account" : "Login"}
+        </Link>
+
         {/* Cart */}
         <button
           onClick={openCart}
