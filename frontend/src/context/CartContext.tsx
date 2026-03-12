@@ -9,8 +9,8 @@ import {
   ReactNode,
 } from "react";
 
-const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_URL || 'https://cah-assignment.onrender.com'
-const PUBLISHABLE_KEY = 'pk_76962c41b90bef91da9bea018054c4b5e6bd5744e64dc75b0cc3f6149f9345d8'
+const MEDUSA_PROXY = '/api/medusa'
+const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || 'pk_76962c41b90bef91da9bea018054c4b5e6bd5744e64dc75b0cc3f6149f9345d8'
 
 const MEDUSA_HEADERS = {
   'Content-Type': 'application/json',
@@ -55,10 +55,9 @@ function loadCart(): CartItem[] {
 
 async function createMedusaCart() {
   try {
-    const res = await fetch(`${MEDUSA_URL}/store/carts`, {
+    const res = await fetch(`${MEDUSA_PROXY}/store/carts`, {
       method: 'POST',
       headers: MEDUSA_HEADERS,
-      credentials: 'include',
     })
     const data = await res.json()
     return data.cart?.id || null
@@ -69,10 +68,9 @@ async function createMedusaCart() {
 
 async function addItemToMedusaCart(cartId: string, variantId: string, quantity: number) {
   try {
-    await fetch(`${MEDUSA_URL}/store/carts/${cartId}/line-items`, {
+    await fetch(`${MEDUSA_PROXY}/store/carts/${cartId}/line-items`, {
       method: 'POST',
       headers: MEDUSA_HEADERS,
-      credentials: 'include',
       body: JSON.stringify({ variant_id: variantId, quantity }),
     })
   } catch {
@@ -82,10 +80,9 @@ async function addItemToMedusaCart(cartId: string, variantId: string, quantity: 
 
 async function removeItemFromMedusaCart(cartId: string, lineItemId: string) {
   try {
-    await fetch(`${MEDUSA_URL}/store/carts/${cartId}/line-items/${lineItemId}`, {
+    await fetch(`${MEDUSA_PROXY}/store/carts/${cartId}/line-items/${lineItemId}`, {
       method: 'DELETE',
       headers: MEDUSA_HEADERS,
-      credentials: 'include',
     })
   } catch {
     // silent fail

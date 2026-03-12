@@ -1,18 +1,122 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #000000;
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  button {
+    cursor: pointer;
+  }
+  ::selection {
+    background-color: #fff;
+    color: #000;
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+@layer components {
+  .btn-primary {
+    background-color: #fff;
+    color: #000;
+    border: none;
+    padding: 0.875rem 2rem;
+    font-weight: 900;
+    font-size: 0.8125rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition:
+      background-color 0.15s,
+      opacity 0.15s;
+    cursor: pointer;
+    border-radius: 0;
+    display: inline-block;
+    text-align: center;
+  }
+  .btn-primary:hover {
+    background-color: #e0e0e0;
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-red {
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 0.875rem 2rem;
+    font-weight: 900;
+    font-size: 0.8125rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: opacity 0.15s;
+    cursor: pointer;
+    border-radius: 0;
+    display: inline-block;
+    text-align: center;
+  }
+  .btn-red:hover {
+    opacity: 0.85;
+  }
+  .btn-red:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-outline {
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 0.8125rem 2rem;
+    font-weight: 900;
+    font-size: 0.8125rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition:
+      background-color 0.15s,
+      color 0.15s;
+    cursor: pointer;
+    border-radius: 0;
+    display: inline-block;
+    text-align: center;
+  }
+  .btn-outline:hover {
+    background-color: #fff;
+    color: #000;
+  }
+  .section-container {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 }
 
-* {
-  box-sizing: border-box;
+/* Carousel */
+.carousel-container {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.carousel-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Cart drawer z-index layers */
+.cart-overlay {
+  z-index: 9998;
+}
+.cart-drawer {
+  z-index: 9999;
 }

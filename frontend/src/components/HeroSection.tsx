@@ -23,33 +23,54 @@ interface HeroData {
 
 export default function HeroSection({ data }: { data?: HeroData }) {
   return (
-    <section className="bg-black px-5 py-20">
-      <div className="mx-auto flex max-w-[1200px] flex-col items-center text-center">
+    <section className="bg-black px-5 pb-14 pt-16 md:pb-20 md:pt-24">
+      <div className="mx-auto flex max-w-[700px] flex-col items-center text-center">
+        {/* Hero Logo */}
         <Image
           src="https://www.cardsagainsthumanity.com/images/logo-hero.svg"
-          alt="Cards Against Humanity Logo"
-          width={300}
-          height={90}
+          alt="Cards Against Humanity"
+          width={500}
+          height={120}
           priority
-          className="mb-10 w-[300px]"
+          fetchPriority="high"
+          className="mb-10 w-[300px] md:w-[460px]"
         />
-        <h1 className="mb-6 text-5xl font-black text-white md:text-8xl">
-          {data?.heading || "Cards Against Humanity"}
-        </h1>
-        <p className="mb-10 text-xl italic text-[#FF0000]">
-          &ldquo;{data?.quoteOne || "Bad."}&rdquo; &mdash; {data?.quoteOneSource || "NPR"}
+
+        {/* Description */}
+        <p className="mb-10 max-w-[520px] text-[16px] leading-[1.7] text-white/90 md:text-[18px]">
+          {data?.description ||
+            "Cards Against Humanity is a fill-in-the-blank party game that turns your awkward personality and lackluster social skills into hours of fun! Wow."}
         </p>
-        <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
+
+        {/* Press Quotes */}
+        <div className="mb-10 flex flex-col gap-3">
+          <p className="text-[15px] italic text-[#FF0000] md:text-[16px]">
+            &ldquo;{data?.quoteOne || "Absurd."}&rdquo;{" "}
+            <span className="not-italic text-[#FF0000]/80">
+              &mdash; {data?.quoteOneSource || "The New York Times"}
+            </span>
+          </p>
+          <p className="text-[15px] italic text-[#FF0000] md:text-[16px]">
+            &ldquo;{data?.quoteTwo || "A game for horrible people."}&rdquo;{" "}
+            <span className="not-italic text-[#FF0000]/80">
+              &mdash; {data?.quoteTwoSource || "Bloomberg Businessweek"}
+            </span>
+          </p>
+        </div>
+
+        {/* Suit Icons */}
+        <div className="flex flex-wrap items-center justify-center gap-[10px]">
           {suitIcons.map((icon, i) => (
-            <Image key={i} src={icon} alt="Card suit icon" width={38} height={38} />
+            <Image
+              key={i}
+              src={icon}
+              alt=""
+              width={30}
+              height={30}
+              className="h-[30px] w-[30px] opacity-60"
+            />
           ))}
         </div>
-        <p className="mx-auto mb-10 max-w-[600px] text-center text-lg leading-relaxed text-white">
-          {data?.description || "Cards Against Humanity is a fill-in-the-blank party game that turns your awkward personality and lackluster social skills into hours of fun! Wow."}
-        </p>
-        <p className="text-xl italic text-[#FF0000]">
-          &ldquo;{data?.quoteTwo || "Stupid."}&rdquo; &mdash; {data?.quoteTwoSource || "Bloomberg"}
-        </p>
       </div>
     </section>
   );

@@ -2,77 +2,67 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import { useCart } from "@/context/CartContext";
 
 const fallbackProduct = {
-  name: "More Cards Against Humanity",
-  slug: "more-cah",
-  price: 25,
+  name: "Cards Against Humanity: Family Edition",
+  slug: "family-edition",
+  price: 29,
   description:
-    "More Cards Against Humanity comes with 600 expansion cards that instantly double the replayability and girth of your deck.",
+    "Cards Against Humanity: Family Edition is a whole new game that's just as funny as the original, but written so kids and adults can play together. Each round, one player asks a question from a blue card, and everyone else answers with their funniest yellow card.",
   bulletPoints: [
-    {
-      point:
-        "If you\u2019ve never bought an expansion and you want more Cards Against Humanity, buy More Cards Against Humanity.",
-    },
-    {
-      point:
-        "It\u2019s got all the best jokes from our old Red Box, Blue Box, and Green Box expansions, plus 50 cards we\u2019ve never printed before.",
-    },
-    { point: "Shiny!" },
+    { point: "Designed for kids ages 8 and up." },
+    { point: "A whole new game \u2014 not just a censored version of the original." },
+    { point: "600 cards, endless replay value." },
   ],
   images: [
     {
       imageUrl:
-        "https://img.cah.io/images/vc07edlh/production/5e64d25a746ed1ebc9d5025f935fc650a984a105-1400x1260.png",
+        "https://img.cah.io/images/vc07edlh/production/048109f3bcd6e2c21cb041f9e5d0ddeac9c3de2f-716x1294.png",
     },
   ],
 };
 
 const fallbackRelated = [
   {
-    id: "tales-vol-1",
-    slug: "tales-vol-1",
-    name: "Tales Vol. 1",
-    description:
-      "A book of fill-in-the-blank stories to play with your CAH cards.",
-    price: 19.99,
+    id: "cards-against-humanity",
+    slug: "cards-against-humanity",
+    name: "Cards Against Humanity",
+    description: "America\u2019s #1 gerbil coffin.",
+    price: 29,
     images: [
       {
         imageUrl:
-          "https://img.cah.io/images/vc07edlh/production/5de43bd46e3aca7e0dbbe441a5f27de1bb041cda-1401x1261.png",
+          "https://img.cah.io/images/vc07edlh/production/69d14a8c4c8084841b5f3437eb8a06124162dc0d-660x1270.png",
       },
     ],
   },
   {
-    id: "shit-list",
-    slug: "shit-list",
-    name: "Shit List",
-    description:
-      "A fresh way to play CAH where YOU write the answers, plus 80 black cards.",
-    price: 22.99,
+    id: "more-cah",
+    slug: "more-cah",
+    name: "More Cards Against Humanity",
+    description: "600 expansion cards to double your deck.",
+    price: 25,
     images: [
       {
         imageUrl:
-          "https://img.cah.io/images/vc07edlh/production/06e90cda6bff2b7f23e2998f3c0a18451649fc94-1400x1261.png",
+          "https://img.cah.io/images/vc07edlh/production/6122ebf50190e25b00cbfd9d7960671bf6a0c054-660x1200.png",
       },
     ],
   },
   {
-    id: "twists-bundle",
-    slug: "twists-bundle",
-    name: "Twists Bundle",
-    description:
-      "It\u2019s like playing for the first time again, four more times.",
-    price: 59.99,
+    id: "five-dollar-packs",
+    slug: "five-dollar-packs",
+    name: "$5 Packs",
+    description: "For whatever you\u2019re into.",
+    price: 5,
     images: [
       {
         imageUrl:
-          "https://img.cah.io/images/vc07edlh/production/20c0b3d96cc73ad923a6d8d25abf900d688fd80b-2801x2521.png",
+          "https://img.cah.io/images/vc07edlh/production/41556c5c773ab42a27824ae1c8c73315653de2bf-660x1200.png",
       },
     ],
   },
@@ -84,35 +74,11 @@ interface Props {
   footer: any;
 }
 
-function QuantitySelector({
-  quantity,
-  onChange,
-}: {
-  quantity: number;
-  onChange: (q: number) => void;
-}) {
-  return (
-    <div className="mb-5 flex items-center">
-      <button
-        onClick={() => onChange(Math.max(1, quantity - 1))}
-        className="flex h-10 w-10 items-center justify-center border border-gray-300 text-lg text-black transition-colors hover:bg-gray-100"
-      >
-        &minus;
-      </button>
-      <span className="flex h-10 w-12 items-center justify-center border-y border-gray-300 text-[15px] font-bold text-black">
-        {quantity}
-      </span>
-      <button
-        onClick={() => onChange(quantity + 1)}
-        className="flex h-10 w-10 items-center justify-center border border-gray-300 text-lg text-black transition-colors hover:bg-gray-100"
-      >
-        +
-      </button>
-    </div>
-  );
-}
-
-export default function MoreCAHClient({ product, related, footer }: Props) {
+export default function FamilyEditionClient({
+  product,
+  related,
+  footer,
+}: Props) {
   const p = product || fallbackProduct;
   const relatedList = related?.length > 0 ? related : fallbackRelated;
   const productImage =
@@ -125,9 +91,9 @@ export default function MoreCAHClient({ product, related, footer }: Props) {
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addItem({
-        id: p?.slug || "more-cah",
-        name: p?.name || "More Cards Against Humanity",
-        price: p?.price || 25,
+        id: p?.slug || "family-edition",
+        name: p?.name || "Family Edition",
+        price: p?.price || 29,
         image: productImage,
         variantId: p?.medusaVariantId,
       });
@@ -148,7 +114,7 @@ export default function MoreCAHClient({ product, related, footer }: Props) {
             <div className="flex items-center justify-center">
               <Image
                 src={productImage}
-                alt={p?.name || "Product"}
+                alt={p?.name || "Family Edition"}
                 width={600}
                 height={540}
                 className="h-auto w-full max-w-[400px]"
@@ -159,13 +125,16 @@ export default function MoreCAHClient({ product, related, footer }: Props) {
             {/* Right - Info */}
             <div className="flex flex-col">
               <h1 className="mb-3 text-[24px] font-extrabold text-black md:text-[32px]">
-                {p?.name}
+                {p?.name || fallbackProduct.name}
               </h1>
               <p className="mb-5 text-[22px] font-extrabold text-black md:text-[26px]">
-                ${typeof p?.price === "number" ? p.price.toFixed(2) : p?.price}
+                $
+                {typeof p?.price === "number"
+                  ? p.price.toFixed(2)
+                  : p?.price || "29.00"}
               </p>
               <p className="mb-5 text-[15px] leading-[1.7] text-[#555555]">
-                {p?.description}
+                {p?.description || fallbackProduct.description}
               </p>
               {bullets.length > 0 && (
                 <ul className="mb-6 list-disc space-y-2 pl-5 text-[15px] leading-[1.7] text-[#555555]">
@@ -174,7 +143,26 @@ export default function MoreCAHClient({ product, related, footer }: Props) {
                   ))}
                 </ul>
               )}
-              <QuantitySelector quantity={quantity} onChange={setQuantity} />
+
+              {/* Quantity Selector */}
+              <div className="mb-5 flex items-center">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="flex h-10 w-10 items-center justify-center border border-gray-300 text-lg text-black transition-colors hover:bg-gray-100"
+                >
+                  &minus;
+                </button>
+                <span className="flex h-10 w-12 items-center justify-center border-y border-gray-300 text-[15px] font-bold text-black">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="flex h-10 w-10 items-center justify-center border border-gray-300 text-lg text-black transition-colors hover:bg-gray-100"
+                >
+                  +
+                </button>
+              </div>
+
               <button
                 onClick={handleAddToCart}
                 className="btn-red w-full py-4"
@@ -235,11 +223,12 @@ function RelatedCard({ item }: { item: any }) {
         <h3 className="mb-1 text-[15px] font-bold text-black">
           {item?.name}
         </h3>
-        <p className="mb-2 text-[13px] text-[#666666]">
-          {item?.description}
-        </p>
+        <p className="mb-2 text-[13px] text-[#666666]">{item?.description}</p>
         <p className="mb-3 text-[15px] font-bold text-black">
-          ${typeof item?.price === "number" ? item.price.toFixed(2) : item?.price}
+          $
+          {typeof item?.price === "number"
+            ? item.price.toFixed(2)
+            : item?.price}
         </p>
         <button
           onClick={handleAdd}

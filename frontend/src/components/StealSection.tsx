@@ -10,42 +10,53 @@ interface StealData {
 
 export default function StealSection({ data }: { data?: StealData }) {
   return (
-    <section className="bg-white px-5 py-20">
-      <div className="mx-auto max-w-[1200px]">
-        <h2 className="mb-12 text-4xl font-bold text-black">
+    <section className="bg-white px-5 py-14 md:py-20">
+      <div className="mx-auto max-w-[1000px]">
+        <h2 className="mb-8 text-[28px] font-extrabold text-black md:mb-12 md:text-[42px]">
           {data?.title || "Steal the game."}
         </h2>
-        <div className="flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
-          <div className="max-w-[600px] flex-1">
-            <p className="mb-6 text-lg leading-relaxed text-black">
-              {data?.description || "Since day one, Cards Against Humanity has been available as a free download on our website. You can download the PDFs and printing instructions right here—all you need is a printer, scissors, and a prehensile appendage."}
+        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between md:gap-16">
+          {/* Left: Text + Buttons */}
+          <div className="max-w-[550px] flex-1">
+            <p className="mb-4 text-[15px] leading-[1.7] text-black/80 md:text-[17px]">
+              {data?.description ||
+                "Since day one, Cards Against Humanity has been available as a free download on our website. You can download the PDFs and printing instructions right here\u2014all you need is a printer, scissors, and a prehensile appendage."}
             </p>
-            <p className="mb-8 text-sm text-gray-600">
-              {data?.note || "Please note: there's no legal way to use these PDFs to make money, so don't ask."}
+            <p className="mb-8 text-[13px] leading-relaxed text-[#999999] md:text-[14px]">
+              {data?.note ||
+                "Please note: there\u2019s no legal way to use these PDFs to make money, so don\u2019t ask."}
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="bg-[#FF0000] px-6 py-3 text-sm font-bold uppercase tracking-wide text-white transition-opacity hover:opacity-80">
-                {data?.buttonOneText || "Download Files"}
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="#"
+                className="btn-red px-6 py-3"
+              >
+                {data?.buttonOneText || "DOWNLOAD FILES"}
               </a>
-              <a href="#" className="bg-[#FF0000] px-6 py-3 text-sm font-bold uppercase tracking-wide text-white transition-opacity hover:opacity-80">
-                {data?.buttonTwoText || "Download"}
+              <a
+                href="#"
+                className="btn-red px-6 py-3"
+              >
+                {data?.buttonTwoText || "DOWNLOAD"}
               </a>
             </div>
           </div>
-          <div className="relative flex shrink-0 items-center justify-center md:w-[300px]">
+
+          {/* Right: Badge + Arrow */}
+          <div className="relative flex shrink-0 items-center justify-center md:w-[280px]">
             <Image
               src="https://www.cardsagainsthumanity.com/images/steal-badge.svg"
               alt="Free download badge"
               width={200}
               height={200}
-              className="h-auto w-[200px]"
+              className="h-auto w-[180px] md:w-[200px]"
             />
             <Image
               src="https://www.cardsagainsthumanity.com/images/steal-arrow.svg"
               alt="Arrow"
-              width={150}
-              height={120}
-              className="absolute -bottom-4 -left-4 h-auto w-[150px]"
+              width={140}
+              height={110}
+              className="absolute -bottom-6 -left-6 h-auto w-[130px] md:w-[140px]"
             />
           </div>
         </div>

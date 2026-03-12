@@ -1,20 +1,24 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import CartDrawer from "@/components/CartDrawer";
-import BuySection from "@/components/BuySection";
+import type { Metadata } from "next";
+import ProductGrid from "@/components/home/ProductGrid";
+
+export const metadata: Metadata = {
+  title: "Shop",
+  description:
+    "Buy Cards Against Humanity, expansion packs, and everything else.",
+};
 
 export default function ShopPage() {
   return (
-    <>
-      <Navbar />
-      <main className="bg-white">
-        <div className="bg-black px-5 py-16 text-center">
-          <h1 className="text-5xl font-black text-white">Shop</h1>
-        </div>
-        <BuySection />
-      </main>
-      <Footer />
-      <CartDrawer />
-    </>
+    <main>
+      <section className="px-6 py-24 text-center">
+        <h1 className="text-[clamp(2.5rem,5vw,4.5rem)] font-black leading-[1.05]">
+          The Store.
+        </h1>
+        <p className="mt-3 text-gray-400">
+          All the games and packs you need for game night.
+        </p>
+      </section>
+      <ProductGrid />
+    </main>
   );
 }

@@ -1,59 +1,70 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 
 interface Product {
   id?: string;
   name?: string;
+  slug?: string;
   tagline?: string;
   buttonText?: string;
   buttonLink?: string;
+  price?: number;
   images?: { imageUrl: string; alt?: string }[];
+  medusaVariantId?: string;
 }
 
-const fallbackProducts = [
+const fallbackProducts: Product[] = [
   {
     id: "cards-against-humanity",
-    images: [{ imageUrl: "https://img.cah.io/images/vc07edlh/production/69d14a8c4c8084841b5f3437eb8a06124162dc0d-660x1270.png" }],
+    slug: "cards-against-humanity",
+    images: [
+      { imageUrl: "https://img.cah.io/images/vc07edlh/production/69d14a8c4c8084841b5f3437eb8a06124162dc0d-660x1270.png" },
+    ],
     tagline: "America's #1 gerbil coffin.",
-    buttonText: "Buy Now",
+    buttonText: "BUY NOW",
     buttonLink: "/products/more-cah",
     name: "Cards Against Humanity",
     price: 29,
   },
   {
     id: "family-edition",
-    images: [{ imageUrl: "https://img.cah.io/images/vc07edlh/production/048109f3bcd6e2c21cb041f9e5d0ddeac9c3de2f-716x1294.png" }],
+    slug: "family-edition",
+    images: [
+      { imageUrl: "https://img.cah.io/images/vc07edlh/production/048109f3bcd6e2c21cb041f9e5d0ddeac9c3de2f-716x1294.png" },
+    ],
     tagline: "Play CAH with your kids.",
-    buttonText: "Buy Family Edition",
-    buttonLink: "#",
+    buttonText: "BUY FAMILY EDITION",
     name: "Family Edition",
     price: 29,
   },
   {
     id: "more-cah",
-    images: [{ imageUrl: "https://img.cah.io/images/vc07edlh/production/6122ebf50190e25b00cbfd9d7960671bf6a0c054-660x1200.png" }],
+    slug: "more-cah",
+    images: [
+      { imageUrl: "https://img.cah.io/images/vc07edlh/production/6122ebf50190e25b00cbfd9d7960671bf6a0c054-660x1200.png" },
+    ],
     tagline: "Moooooore cards!",
-    buttonText: "Buy Expansions",
-    buttonLink: "#",
+    buttonText: "BUY EXPANSIONS",
     name: "More Cards Against Humanity",
     price: 20,
   },
   {
     id: "five-dollar-packs",
-    images: [{ imageUrl: "https://img.cah.io/images/vc07edlh/production/41556c5c773ab42a27824ae1c8c73315653de2bf-660x1200.png" }],
+    slug: "five-dollar-packs",
+    images: [
+      { imageUrl: "https://img.cah.io/images/vc07edlh/production/41556c5c773ab42a27824ae1c8c73315653de2bf-660x1200.png" },
+    ],
     tagline: "For whatever you're into.",
-    buttonText: "Buy $5 Packs",
-    buttonLink: "#",
+    buttonText: "BUY $5 PACKS",
     name: "$5 Packs",
     price: 5,
   },
 ];
 
-function BuyButton({ product }: { product: any }) {
+function BuyButton({ product }: { product: Product }) {
   const { addItem, openCart } = useCart();
   const [added, setAdded] = useState(false);
 
@@ -63,6 +74,7 @@ function BuyButton({ product }: { product: any }) {
       name: product.name || product.tagline || "Product",
       price: product.price || 29,
       image: product.images?.[0]?.imageUrl || "",
+      variantId: product.medusaVariantId,
     });
     setAdded(true);
     openCart();
@@ -72,38 +84,52 @@ function BuyButton({ product }: { product: any }) {
   return (
     <button
       onClick={handleAdd}
-      className="block w-full bg-[#FF0000] py-4 text-center text-sm font-bold uppercase tracking-wide text-white transition-opacity hover:opacity-80"
+      className="btn-red mt-auto block w-full py-4"
     >
-      {added ? "Added!" : product.buttonText || "Add to Cart"}
+      {added ? "ADDED!" : product.buttonText || "ADD TO CART"}
     </button>
   );
 }
 
-export default function BuySection({ data }: { data?: any[] }) {
+export default function BuySection({
+  data,
+  showHeading = true,
+}: {
+  data?: Product[];
+  showHeading?: boolean;
+}) {
   const products = data && data.length > 0 ? data : fallbackProducts;
 
   return (
-    <section className="bg-white px-5 py-20">
-      <div className="mx-auto max-w-[1200px]">
-        <h2 className="mb-16 text-4xl font-bold text-black">Buy the game.</h2>
-        <div className="grid grid-cols-1 gap-16 md:grid-cols-2">
+    <section className="bg-white px-5 py-14 md:py-20">
+      <div className="mx-auto max-w-[1000px]">
+        {showHeading && (
+          <h2 className="mb-12 text-[28px] font-extrabold leading-tight text-black md:mb-16 md:text-[42px]">
+            Buy the game.
+          </h2>
+        )}
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:gap-x-16 md:gap-y-14">
           {products.map((product, idx) => (
             <div key={idx} className="flex flex-col">
-              <div className="mb-5 flex max-h-[400px] items-center justify-center gap-2 overflow-hidden">
-                {(product.images || []).map((img: any, i: number) => (
+              {/* Product Image(s) */}
+              <div className="mb-5 flex items-end justify-center gap-1 px-4">
+                {(product.images || []).map((img, i) => (
                   <Image
                     key={i}
                     src={img.imageUrl}
-                    alt={product.tagline || "Product"}
+                    alt={img.alt || product.tagline || "Product"}
                     width={330}
-                    height={635}
-                    className="max-h-[350px] w-auto object-contain"
+                    height={600}
+                    className="h-auto max-h-[340px] w-auto object-contain"
+                    loading={idx < 2 ? "eager" : "lazy"}
                   />
                 ))}
               </div>
-              <p className="mb-4 text-lg font-medium text-black">
+              {/* Tagline */}
+              <p className="mb-4 text-[16px] leading-snug text-black md:text-[17px]">
                 {product.tagline}
               </p>
+              {/* CTA Button */}
               <BuyButton product={product} />
             </div>
           ))}

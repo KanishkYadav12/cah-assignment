@@ -46,7 +46,7 @@ export default function ProductCard({
       </p>
       <button
         onClick={handleAdd}
-        className="w-full bg-[#FF0000] py-3 text-sm font-bold uppercase tracking-wide text-white transition-opacity hover:opacity-80"
+        className="btn-red w-full py-3"
       >
         {added ? "Added!" : "Add to Cart"}
       </button>
